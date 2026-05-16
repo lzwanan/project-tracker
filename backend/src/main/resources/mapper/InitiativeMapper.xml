@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.tracker.mapper.InitiativeMapper">
+    <resultMap id="initiativeDetail" type="com.project.tracker.dto.InitiativeVO">
+        <id column="i_id" property="id"/>
+        <result column="i_name" property="name"/>
+        <result column="i_description" property="description"/>
+        <result column="i_status" property="status"/>
+        <result column="i_owner" property="owner"/>
+        <result column="i_start_date" property="startDate"/>
+        <result column="i_end_date" property="endDate"/>
+        <result column="i_actual_end_date" property="actualEndDate"/>
+        <result column="i_created_at" property="createdAt"/>
+        <collection property="milestones" ofType="com.project.tracker.dto.MilestoneWithRisks">
+            <id column="m_id" property="id"/>
+            <result column="m_name" property="name"/>
+            <result column="m_target_date" property="targetDate"/>
+            <result column="m_actual_date" property="actualDate"/>
+            <result column="m_status" property="status"/>
+            <collection property="risks" ofType="com.project.tracker.entity.InitiativeRisk">
+                <id column="r_id" property="id"/>
+                <result column="r_milestone_id" property="milestoneId"/>
+                <result column="r_title" property="title"/>
+                <result column="r_description" property="description"/>
+                <result column="r_severity" property="severity"/>
+                <result column="r_status" property="status"/>
+                <result column="r_owner" property="owner"/>
+                <result column="r_identified_date" property="identifiedDate"/>
+                <result column="r_resolution_date" property="resolutionDate"/>
+                <result column="r_progress" property="progress"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="selectDetail" resultMap="initiativeDetail">
+        SELECT i.id AS i_id, i.name AS i_name, i.description AS i_description, i.status AS i_status, i.owner AS i_owner,
+            i.start_date AS i_start_date, i.end_date AS i_end_date, i.actual_end_date AS i_actual_end_date, i.created_at AS i_created_at,
+            m.id AS m_id, m.name AS m_name, m.target_date AS m_target_date, m.actual_date AS m_actual_date, m.status AS m_status,
+            r.id AS r_id, r.milestone_id AS r_milestone_id, r.title AS r_title, r.description AS r_description, r.severity AS r_severity,
+            r.status AS r_status, r.owner AS r_owner, r.identified_date AS r_identified_date, r.resolution_date AS r_resolution_date, r.progress AS r_progress
+        FROM initiative i
+        LEFT JOIN initiative_milestone m ON i.id = m.initiative_id
+        LEFT JOIN initiative_risk r ON m.id = r.milestone_id
+        WHERE i.id = #{id}
+        ORDER BY m.target_date ASC, r.id ASC
+    </select>
+</mapper>

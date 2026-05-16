@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.tracker.mapper.MonthlyOncallMapper">
+    <resultMap id="oncallWithPersonnel" type="com.project.tracker.dto.MonthlyOncallVO">
+        <id column="id" property="id"/>
+        <result column="year_month" property="yearMonth"/>
+        <result column="oncall_person_id" property="oncallPersonId"/>
+        <result column="backup_person_id" property="backupPersonId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <association property="oncallPerson" javaType="com.project.tracker.entity.Personnel">
+            <id column="op_id" property="id"/>
+            <result column="op_employee_id" property="employeeId"/>
+            <result column="op_name" property="name"/>
+            <result column="op_email" property="email"/>
+        </association>
+        <association property="backupPerson" javaType="com.project.tracker.entity.Personnel">
+            <id column="bp_id" property="id"/>
+            <result column="bp_employee_id" property="employeeId"/>
+            <result column="bp_name" property="name"/>
+            <result column="bp_email" property="email"/>
+        </association>
+    </resultMap>
+    <select id="selectListWithPersonnel" resultMap="oncallWithPersonnel">
+        SELECT mo.id, mo.year_month, mo.oncall_person_id, mo.backup_person_id, mo.created_at, mo.updated_at,
+            op.id AS op_id, op.employee_id AS op_employee_id, op.name AS op_name, op.email AS op_email,
+            bp.id AS bp_id, bp.employee_id AS bp_employee_id, bp.name AS bp_name, bp.email AS bp_email
+        FROM monthly_oncall mo
+        LEFT JOIN personnel op ON mo.oncall_person_id = op.id
+        LEFT JOIN personnel bp ON mo.backup_person_id = bp.id
+        <where><if test="yearMonth != null and yearMonth != ''">AND mo.year_month = #{yearMonth}</if></where>
+        ORDER BY mo.year_month DESC
+    </select>
+</mapper>

@@ -1,0 +1,67 @@
+# ====================
+# Java / Maven
+# ====================
+target/
+*.class
+*.jar
+*.war
+!gradle/wrapper/gradle-wrapper.jar
+logs/
+*.log
+
+# ====================
+# H2 Database
+# ====================
+**/data/*.db
+**/data/*.mv.db
+**/data/*.trace.db
+
+# ====================
+# Backup files
+# ====================
+backup/
+backups/
+
+# ====================
+# Node / Frontend
+# ====================
+node_modules/
+dist/
+.vite/
+
+# Frontend build output in backend static
+backend/src/main/resources/static/
+
+# ====================
+# IDE
+# ====================
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+.factorypath
+
+# ====================
+# OS
+# ====================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ====================
+# Environment
+# ====================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ====================
+# Maven wrapper (optional)
+# ====================
+!.mvn/wrapper/maven-wrapper.jar

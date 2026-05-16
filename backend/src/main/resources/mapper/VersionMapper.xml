@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.tracker.mapper.VersionMapper">
+    <resultMap id="versionDetailMap" type="com.project.tracker.dto.VersionVO">
+        <id column="v_id" property="id"/>
+        <result column="v_name" property="name"/>
+        <result column="v_description" property="description"/>
+        <result column="v_status" property="status"/>
+        <result column="v_owner" property="owner"/>
+        <result column="v_planned_date" property="plannedDate"/>
+        <result column="v_actual_date" property="actualDate"/>
+        <result column="v_created_at" property="createdAt"/>
+        <collection property="requirements" ofType="com.project.tracker.dto.RequirementVO">
+            <id column="r_id" property="id"/>
+            <result column="r_name" property="name"/>
+            <result column="r_req_number" property="reqNumber"/>
+            <result column="r_assignee" property="assignee"/>
+        </collection>
+        <collection property="stages" ofType="com.project.tracker.dto.StageVO" column="v_id" select="selectStagesByVersionId"/>
+    </resultMap>
+    <select id="selectVersionDetail" resultMap="versionDetailMap">
+        SELECT v.id AS v_id, v.name AS v_name, v.description AS v_description, v.status AS v_status, v.owner AS v_owner,
+            v.planned_date AS v_planned_date, v.actual_date AS v_actual_date, v.created_at AS v_created_at,
+            r.id AS r_id, r.name AS r_name, r.req_number AS r_req_number, r.assignee AS r_assignee
+        FROM version v LEFT JOIN version_requirement r ON v.id = r.version_id
+        WHERE v.id = #{id} ORDER BY r.id ASC
+    </select>
+    <select id="selectStagesByVersionId" resultType="com.project.tracker.dto.StageVO">
+        SELECT id, version_id AS versionId, parent_id AS parentId, name, order_seq AS orderSeq, status, due_date AS dueDate, assignee
+        FROM version_stage WHERE version_id = #{v_id} ORDER BY order_seq ASC, id ASC
+    </select>
+</mapper>

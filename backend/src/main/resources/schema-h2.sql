@@ -1,0 +1,132 @@
+CREATE TABLE IF NOT EXISTS personnel (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    password VARCHAR(200) NOT NULL DEFAULT '',
+    remember_token VARCHAR(100),
+    first_login BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sys_role (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    code VARCHAR(50) NOT NULL,
+    description VARCHAR(200),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS personnel_role (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    personnel_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS monthly_oncall (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    year_month VARCHAR(7) NOT NULL,
+    oncall_person_id BIGINT NOT NULL,
+    backup_person_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS version (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(500),
+    status VARCHAR(30) NOT NULL DEFAULT 'PLANNING',
+    owner VARCHAR(100),
+    planned_date DATE,
+    actual_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS version_requirement (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    version_id BIGINT NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    req_number VARCHAR(50),
+    assignee VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS version_stage (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    version_id BIGINT NOT NULL,
+    parent_id BIGINT,
+    name VARCHAR(100) NOT NULL,
+    order_seq INT NOT NULL DEFAULT 0,
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+    due_date DATE,
+    assignee VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS stage_check_item (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    stage_id BIGINT NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description VARCHAR(500),
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+    assignee VARCHAR(100),
+    remark VARCHAR(500),
+    completed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS initiative (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(500),
+    status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE',
+    owner VARCHAR(100),
+    start_date DATE,
+    end_date DATE,
+    actual_end_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS initiative_milestone (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    initiative_id BIGINT NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    target_date DATE,
+    actual_date DATE,
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS initiative_risk (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    initiative_id BIGINT NOT NULL,
+    milestone_id BIGINT,
+    title VARCHAR(200) NOT NULL,
+    description VARCHAR(1000),
+    severity VARCHAR(30) NOT NULL DEFAULT 'MEDIUM',
+    status VARCHAR(30) NOT NULL DEFAULT 'IDENTIFIED',
+    owner VARCHAR(100),
+    identified_date DATE,
+    resolution_date DATE,
+    progress VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS access_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100),
+    ip VARCHAR(50),
+    method VARCHAR(10),
+    path VARCHAR(500),
+    user_agent VARCHAR(500),
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
